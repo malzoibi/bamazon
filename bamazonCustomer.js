@@ -33,5 +33,32 @@ var displayProducts = function(){
 				message:"How many times would you like to purchase this product?"
 			}
 		])
-	
+	.then(function(answer){
+		var itemPurchased;
+		for (var i = 0; i < res.length; i++){
+		
+		if(res[i].item_id === answer.choice){itemPurchased = res[i];}
+		}
+		if (itemPurchased.stock_quantity < parseInt(answer.number)){
+			console.log("The product(s) is/are available!");
+
+			connection.query("UPDATE prodcuts SET ? WHERE ?", [
+				{
+					stock_quantity: number
+				},
+				{
+					item_id: itemPurchased
+				}],
+		function(error){
+			if (error) throw err;
+			console.log("Quantity Purchased!");
+			displayProducts();
+		}
+			);
+		}
+			else{
+				console.log("Insuffecient stock quantity. Make another quantity selection.");
+				displayProducts();
+			}
+	});
 	})};
